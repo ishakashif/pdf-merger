@@ -4,11 +4,14 @@ import os
 
 
 merger = PyPDF2.PdfFileMerger()
-pdf-folder = 'pdf-files'
+pdf_folder = 'pdf-files'
 
 
-for file in os.listdir(os.curdir):
+for file in os.listdir(pdf_folder):
     if file.endswith('.pdf'):
-        print(file)
-        merger.append(file)
-        merger.write('merged.pdf')
+        filepath = os.path.join(pdf_folder, file)
+        print(f"Merging: {filepath}")
+        merger.append(filepath)
+    
+        
+merger.write('merged.pdf')
