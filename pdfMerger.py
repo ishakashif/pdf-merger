@@ -4,6 +4,8 @@ import os
 
 
 merger = PyPDF2.PdfFileMerger()
+pdf-folder = 'pdf-files'
+
 
 for file in os.listdir(os.curdir):
     if file.endswith('.pdf'):
