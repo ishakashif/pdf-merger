@@ -1,25 +1,37 @@
-import gradio as gr
+import streamlit as st
 import PyPDF2
 import os
+from tempfile import NamedTemporaryFile
 
-def merge_pdfs(pdf_paths):  # pdf_paths is a list of string file paths
+st.title("PDF Merger")
+st.write("Upload multiple PDF files to merge them into a single PDF.")
+
+uploaded_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multiple_files=True)
+
+if uploaded_files:
     merger = PyPDF2.PdfMerger()
+    temp_files = []
+    for uploaded_file in uploaded_files:
+        # Save uploaded file to a temporary file
+        temp_file = NamedTemporaryFile(delete=False, suffix=".pdf")
+        temp_file.write(uploaded_file.read())
+        temp_file.flush()
+        temp_files.append(temp_file)
+        merger.append(temp_file.name)
+    
     output_path = "merged.pdf"
-
-    for path in pdf_paths:
-        merger.append(path)
-
     merger.write(output_path)
     merger.close()
-    return output_path
 
-iface = gr.Interface(
-    fn=merge_pdfs,
-    inputs=gr.File(label="Upload PDF files", file_count="multiple", type="filepath"),
-    outputs=gr.File(label="Merged PDF"),
-    title="PDF Merger",
-    description="Upload multiple PDF files to merge them into a single PDF."
-)
-
-if __name__ == "__main__":
-    iface.launch()
+    with open(output_path, "rb") as f:
+        st.download_button(
+            label="Download Merged PDF",
+            data=f,
+            file_name="merged.pdf",
+            mime="application/pdf"
+        )
+    # Clean up temp files
+    for temp_file in temp_files:
+        temp_file.close()
+        os.unlink(temp_file.name)
+    os.remove(output_path)
