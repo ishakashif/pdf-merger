@@ -15,3 +15,4 @@ for file in os.listdir(pdf_folder):
     
         
 merger.write('merged.pdf')
+merger.close()
