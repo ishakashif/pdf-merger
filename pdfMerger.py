@@ -1,18 +1,25 @@
+import gradio as gr
 import PyPDF2
-import sys
 import os
 
+def merge_pdfs(pdf_paths):  # pdf_paths is a list of string file paths
+    merger = PyPDF2.PdfMerger()
+    output_path = "merged.pdf"
 
-merger = PyPDF2.PdfFileMerger()
-pdf_folder = 'pdf-files'
+    for path in pdf_paths:
+        merger.append(path)
 
+    merger.write(output_path)
+    merger.close()
+    return output_path
 
-for file in sorted(os.listdir(pdf_folder)):
-    if file.endswith('.pdf'):
-        filepath = os.path.join(pdf_folder, file)
-        print(f"Merging: {filepath}")
-        merger.append(filepath)
-    
-        
-merger.write('merged.pdf')
-merger.close()
+iface = gr.Interface(
+    fn=merge_pdfs,
+    inputs=gr.File(label="Upload PDF files", file_count="multiple", type="filepath"),
+    outputs=gr.File(label="Merged PDF"),
+    title="PDF Merger",
+    description="Upload multiple PDF files to merge them into a single PDF."
+)
+
+if __name__ == "__main__":
+    iface.launch()
