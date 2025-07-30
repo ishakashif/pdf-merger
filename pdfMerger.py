@@ -41,3 +41,4 @@ new_order = st.multiselect("Select the order of the files", file_names, default=
 
 if len(new_order) == len(file_names):
     ordered_files = [next(f for f in uploaded_files if f.name == name) for name in new_order]
+    # have to rename the file stuff here 
