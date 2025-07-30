@@ -35,3 +35,9 @@ if uploaded_files:
         temp_file.close()
         os.unlink(temp_file.name)
     os.remove(output_path)
+
+file_names = [f.name for f in uploaded_files]
+new_order = st.multiselect("Select the order of the files", file_names, default=file_names)
+
+if len(new_order) == len(file_names):
+    ordered_files = [next(f for f in uploaded_files if f.name == name) for name in new_order]
